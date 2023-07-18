@@ -52,7 +52,8 @@ resource "aws_vpc" "my-vpc" {
 resource "aws_subnet" "my-subnet-public-01" {
   vpc_id     = aws_vpc.my-vpc.id
   cidr_block = "10.1.1.0/24"
-
+  map_public_ip_on_launch = "true"
+  availability_zone = "ap-south-1a"
   tags = {
     Name = "my-subnet-public-01"
   }
@@ -61,7 +62,8 @@ resource "aws_subnet" "my-subnet-public-01" {
 resource "aws_subnet" "my-subnet-public-02" {
   vpc_id     = aws_vpc.my-vpc.id
   cidr_block = "10.1.2.0/24"
-
+  map_public_ip_on_launch = "true"
+  availability_zone = "ap-south-1b"
   tags = {
     Name = "my-subnet-public-02"
   }
@@ -81,11 +83,8 @@ resource "aws_route_table" "my-public-rt" {
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.my-igw.id
-  }
 
-  tags = {
-    Name = "my-public-rt"
-  }
+}
 }
 
 resource "aws_route_table_association" "my-rta-public-subnet-01" {

@@ -4,7 +4,7 @@ provider "aws" {
 
 resource "aws_instance" "demo-server" {
     ami = "ami-0f5ee92e2d63afc18"
-    instance_type = "t2.micro"
+    instance_type = "t2.medium"
     key_name = "dpp"
     //security_groups = [ "demo-sg" ]
     vpc_security_group_ids = [aws_security_group.demo-sg.id]
@@ -35,6 +35,14 @@ resource "aws_security_group" "demo-sg" {
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
   }
+ ingress {
+    description      = "Slave Server Container Port"
+    from_port        = 8000
+    to_port          = 8000
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
 
   egress {
     from_port        = 0
@@ -105,14 +113,13 @@ resource "aws_route_table_association" "my-rta-public-subnet-02" {
 }
 
 
-  module "sgs" {
-    source = "../sg_eks"
-    vpc_id     =     aws_vpc.my-vpc.id
- }
-
-  module "eks" {
-       source = "../eks"
-       vpc_id     =     aws_vpc.my-vpc.id
-       subnet_ids = [aws_subnet.my-subnet-public-01.id,aws_subnet.my-subnet-public-02.id]
-       sg_ids = module.sgs.security_group_public
- }
+//  module "sgs" {
+//  source = "../sg_eks"
+//    vpc_id     =     aws_vpc.my-vpc.id
+// }
+//  module "eks" {
+//       source = "../eks"
+//       vpc_id     =     aws_vpc.my-vpc.id
+//       subnet_ids = [aws_subnet.my-subnet-public-01.id,aws_subnet.my-subnet-public-02.id]
+//       sg_ids = module.sgs.security_group_public
+// }
